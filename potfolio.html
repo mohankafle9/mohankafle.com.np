@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mohan Kafle Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6a00f4;
+      --accent: #ff4c60;
+      --bg: #f1f3f6;
+      --text: #111;
+      --white: #fff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      scroll-behavior: smooth;
+    }
+
+    header {
+      background: linear-gradient(120deg, var(--primary), var(--accent));
+      color: var(--white);
+      text-align: center;
+      padding: 100px 20px;
+    }
+
+    header h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+
+    header p {
+      font-size: 1.3rem;
+      font-weight: 400;
+    }
+
+    nav {
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav a {
+      color: var(--primary);
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    .section {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .section h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 40px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .card-body h3 {
+      color: var(--primary);
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    .about {
+      text-align: center;
+      padding: 40px;
+    }
+
+ .about img {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid #ff4c60;
+  margin-bottom: 20px;
+}
+
+
+    .quote {
+      background: var(--accent);
+      color: white;
+      text-align: center;
+      font-size: 1.5rem;
+      padding: 40px 20px;
+      font-weight: bold;
+    }
+
+    .newsletter {
+      background: #fff;
+      padding: 50px 20px;
+      text-align: center;
+      border-top: 5px solid var(--primary);
+    }
+
+    .newsletter input[type="email"] {
+      padding: 12px;
+      width: 280px;
+      border: 2px solid var(--primary);
+      border-radius: 6px;
+      margin-right: 10px;
+    }
+
+    .newsletter button {
+      padding: 12px 20px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .newsletter button:hover {
+      background: var(--accent);
+    }
+
+    footer {
+      background: #222;
+      color: #bbb;
+      text-align: center;
+      padding: 30px 20px;
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      margin: 0 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Mohan Kafle Blog</h1>
+    <p>Colorful Ideas. Personal Stories. Life with Passion.</p>
+  </header>
+
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Blog</a>
+    <a href="#">About</a>
+    <a href="#">Projects</a>
+    <a href="#">Contact</a>
+  </nav>
+
+  <section class="section">
+    <h2>🔥 Trending Articles</h2>
+    <div class="grid">
+      <div class="card">
+        <img src="https://source.unsplash.com/400x300/?idea,brain" alt="">
+        <div class="card-body">
+          <h3>5 Life Lessons I Learned From Failing</h3>
+          <p>Success taught me nothing. Failing gave me clarity, direction, and power.</p>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://source.unsplash.com/400x300/?beatmaker,studio" alt="">
+        <div class="card-body">
+          <h3>How I Started Making Beats at Home</h3>
+          <p>From FL Studio to eSewa sales. The journey of hustle, heart, and headphones.</p>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://source.unsplash.com/400x300/?laptop,code" alt="">
+        <div class="card-body">
+          <h3>Why Every Artist Should Learn HTML</h3>
+          <p>The power of creating your own space online—without waiting for help.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section about">
+  <h2>👋 Meet Mohan</h2>
+  <img src="mohan.png" alt="Mohan Kafle">
+  <p>Namaste! I’m Mohan Kafle from Far Western Nepal. I blog about creativity, technology, beat selling, and my life experiences. This is my personal space to share ideas and grow with the world.</p>
+</section>
+
+
+  <section class="quote">
+    "Don't just scroll — build something that makes others stop scrolling."
+  </section>
+
+  <section class="section">
+    <h2>🆕 Latest Stories</h2>
+    <div class="grid">
+      <div class="card">
+        <img src="https://source.unsplash.com/400x300/?nepal,village" alt="">
+        <div class="card-body">
+          <h3>Growing Up in a Village</h3>
+          <p>How silence, trees, and sky made me who I am today.</p>
+        </div>
+      </div>
+      <div class="card">
+        <img src="https://source.unsplash.com/400x300/?success,mindset" alt="">
+        <div class="card-body">
+          <h3>Mindset That Changed My Game</h3>
+          <p>Being broke taught me lessons that books never could.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="newsletter">
+    <h2>📬 Join My Newsletter</h2>
+    <p>Get my best content every week — no spam, just fire.</p>
+    <input type="email" placeholder="Your email" />
+    <button>Subscribe</button>
+  </section>
+
+  <footer>
+    <p>© 2025 Mohan Kafle. All rights reserved.</p>
+    <p>
+      Follow me:
+      <a href="https://facebook.com/mohanmusic">Facebook</a> |
+      <a href="https://instagram.com/mohanmusic">Instagram</a>
+    </p>
+  </footer>
+
+</body>
+</html>
