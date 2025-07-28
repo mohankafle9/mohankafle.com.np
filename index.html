@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MKN - Mohan Kafle Network (Simple Visitor Access)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset and base */
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0; padding: 0;
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #3b82f6, #9333ea);
+      color: #e0e7ff;
+      overflow-x: hidden;
+    }
+    /* Neon glowing header */
+    header {
+      background: linear-gradient(90deg, #7c3aed, #3b82f6);
+      padding: 1.5rem;
+      font-size: 2.8rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-shadow:
+        0 0 8px #7c3aed,
+        0 0 15px #3b82f6,
+        0 0 30px #8b5cf6;
+      animation: neonPulse 3s ease-in-out infinite alternate;
+      user-select: none;
+    }
+    @keyframes neonPulse {
+      from {
+        text-shadow:
+          0 0 8px #7c3aed,
+          0 0 15px #3b82f6,
+          0 0 30px #8b5cf6;
+      }
+      to {
+        text-shadow:
+          0 0 15px #a78bfa,
+          0 0 25px #60a5fa,
+          0 0 40px #a78bfa;
+      }
+    }
+
+    /* Navigation menu */
+    nav {
+      background: #1e293b;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: flex-end;
+      gap: 2rem;
+      user-select: none;
+      box-shadow: 0 0 15px #7c3aed99;
+      border-radius: 0 0 15px 15px;
+    }
+    nav a {
+      color: #c7d2fe;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      position: relative;
+      padding-bottom: 3px;
+      transition: color 0.3s;
+    }
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0; right: 0;
+      height: 2px;
+      background: #a78bfa;
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.3s ease;
+    }
+    nav a:hover {
+      color: #a78bfa;
+    }
+    nav a:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    /* Main container hidden by default (after login show) */
+    #main-app {
+      display: none;
+      padding: 2rem;
+      max-width: 900px;
+      margin: 2rem auto;
+      user-select: none;
+    }
+
+    /* Sections styling */
+    section {
+      background: rgba(255, 255, 255, 0.07);
+      margin-bottom: 2rem;
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow:
+        0 0 15px #a78bfa66,
+        inset 0 0 25px #3b82f6cc;
+      animation: fadeSlideIn 0.8s ease forwards;
+      opacity: 0;
+      transform: translateY(40px);
+      user-select: text;
+    }
+    section:nth-child(1) { animation-delay: 0.1s; }
+    section:nth-child(2) { animation-delay: 0.3s; }
+    section:nth-child(3) { animation-delay: 0.5s; }
+    section:nth-child(4) { animation-delay: 0.7s; }
+    section:nth-child(5) { animation-delay: 0.9s; }
+
+    @keyframes fadeSlideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Create post */
+    #create-post-section textarea {
+      width: 100%;
+      min-height: 120px;
+      background: #1e293b;
+      border: none;
+      border-radius: 12px;
+      color: #e0e7ff;
+      font-size: 1rem;
+      padding: 1rem;
+      resize: vertical;
+      box-shadow:
+        0 0 12px #a78bfa99 inset;
+      transition: box-shadow 0.3s ease;
+    }
+    #create-post-section textarea:focus {
+      outline: none;
+      box-shadow:
+        0 0 20px #a78bfaee inset;
+    }
+    #submit-post {
+      margin-top: 1rem;
+      background: #8b5cf6;
+      border: none;
+      color: white;
+      padding: 0.8rem 2.2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.4s, transform 0.2s;
+      user-select: none;
+      box-shadow: 0 0 12px #8b5cf6cc;
+    }
+    #submit-post:hover {
+      background: #7c3aed;
+      transform: scale(1.07);
+      box-shadow: 0 0 18px #7c3aedcc;
+    }
+
+    /* Posts container and posts */
+    #posts-container .post {
+      background: #1e293b;
+      margin-top: 1.5rem;
+      padding: 1.5rem 1.8rem;
+      border-radius: 15px;
+      box-shadow:
+        0 0 18px #8b5cf6cc;
+      position: relative;
+      animation: fadeSlideIn 0.5s ease forwards;
+      opacity: 0;
+      transform: translateY(40px);
+      word-wrap: break-word;
+      user-select: text;
+    }
+    #posts-container .post .post-text {
+      font-size: 1.15rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+    .post-feedback {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      user-select: none;
+    }
+    .post-feedback button {
+      background: transparent;
+      border: none;
+      color: #c7d2fe;
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.25s ease, color 0.25s ease;
+    }
+    .post-feedback button:hover {
+      transform: scale(1.3);
+      color: #a78bfa;
+    }
+    .emoji-reactions span {
+      font-size: 1.6rem;
+      margin-right: 14px;
+      cursor: pointer;
+      transition: transform 0.3s ease, color 0.3s ease;
+      user-select: none;
+    }
+    .emoji-reactions span:hover {
+      transform: scale(1.4);
+      color: #a78bfa;
+    }
+
+    /* Comment section */
+    .comment-box {
+      margin-top: 1rem;
+      border-top: 1px solid #4c51bf;
+      padding-top: 0.9rem;
+    }
+    .comment-box input {
+      width: 70%;
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+      background: #252f61;
+      color: #e0e7ff;
+      box-shadow:
+        0 0 10px #4338ca inset;
+    }
+    .comment-box button {
+      padding: 0.5rem 1.2rem;
+      margin-left: 0.6rem;
+      background: #7c3aed;
+      color: white;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      user-select: none;
+      transition: background 0.3s ease;
+      box-shadow: 0 0 12px #7c3aedaa;
+    }
+    .comment-box button:hover {
+      background: #9333ea;
+      box-shadow: 0 0 18px #9333eaaa;
+    }
+    .comments {
+      margin-top: 0.6rem;
+      font-size: 0.95rem;
+      color: #c7d2fecc;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .comments div {
+      margin-bottom: 0.4rem;
+      line-height: 1.3;
+      user-select: text;
+    }
+
+    /* Audio Player */
+    audio {
+      width: 100%;
+      margin-top: 1rem;
+      border-radius: 15px;
+      outline: none;
+      box-shadow:
+        0 0 25px #a78bfaaa;
+    }
+
+    /* Floating animations */
+    .floating-anim {
+      animation: floaty 5s ease-in-out infinite;
+      display: inline-block;
+      user-select: none;
+    }
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    /* Visitor Access Page */
+    #visitor-access-page {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #1e3a8a, #6d28d9);
+      flex-direction: column;
+      gap: 2rem;
+      user-select: none;
+      padding: 0 1rem;
+      text-align: center;
+    }
+    #visitor-access-page h1 {
+      font-size: 3rem;
+      color: #c4b5fd;
+      text-shadow:
+        0 0 20px #a78bfa,
+        0 0 30px #6d28d9;
+      margin: 0;
+      user-select: none;
+    }
+    #visitor-form {
+      background: #312e81;
+      padding: 2rem 2.5rem;
+      border-radius: 20px;
+      box-shadow:
+        0 0 30px #a78bfabb inset;
+      width: 320px;
+      max-width: 90vw;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    #visitor-form input {
+      padding: 0.9rem 1rem;
+      border-radius: 15px;
+      border: none;
+      font-size: 1.2rem;
+      background: #4338ca;
+      color: #e0e7ff;
+      box-shadow:
+        0 0 12px #7c3aedaa inset;
+      transition: box-shadow 0.3s ease;
+      user-select: text;
+    }
+    #visitor-form input:focus {
+      outline: none;
+      box-shadow:
+        0 0 20px #a78bfaee inset;
+    }
+    #visitor-form button {
+      background: #8b5cf6;
+      border: none;
+      color: white;
+      padding: 1rem;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 0 15px #7c3aedbb;
+      transition: background 0.4s ease;
+    }
+    #visitor-form button:hover {
+      background: #7c3aed;
+      box-shadow: 0 0 25px #7c3aedcc;
+    }
+    #visitor-error {
+      color: #f87171;
+      font-weight: 700;
+      height: 1.3rem;
+      font-size: 1rem;
+      user-select: none;
+    }
+
+    /* Logout button style */
+    #logout-btn {
+      font-weight: 700;
+      background: transparent;
+      color: #c4b5fd;
+      border: 2px solid #a78bfa;
+      padding: 0.4rem 1rem;
+      border-radius: 12px;
+      transition: background 0.3s ease, color 0.3s ease;
+      user-select: none;
+    }
+    #logout-btn:hover {
+      background: #a78bfa;
+      color: #1e293b;
+      border-color: #6d28d9;
+    }
+
+  </style>
+</head>
+<body>
+
+<header>Mohan Kafle Network - MKN ⚡</header>
+
+<!-- Visitor Access Page -->
+<div id="visitor-access-page" role="main" aria-label="Visitor Access Form">
+  <h1>Welcome to MKN</h1>
+  <form id="visitor-form" aria-describedby="visitor-error" novalidate>
+    <input type="text" id="visitor-name" placeholder="Enter your Name" aria-label="Your Name" autocomplete="off" required />
+    <input type="tel" id="visitor-number" placeholder="Enter your Phone Number" aria-label="Your Phone Number" autocomplete="off" required pattern="^[0-9+\-\s]+$" />
+    <div id="visitor-error" role="alert" aria-live="assertive"></div>
+    <button type="submit">Enter Site</button>
+  </form>
+</div>
+
+<!-- Main app hidden by default (after visitor access granted) -->
+<div id="main-app" aria-hidden="true">
+
+  <nav>
+    <a href="#create-post-section">Create Post</a>
+    <a href="#meet-mohan">Meet Mohan</a>
+    <a href="#mohan-music">Mohan Music</a>
+    <a href="#mohan-blog">Blog</a>
+    <a href="#" id="logout-btn">Logout</a>
+  </nav>
+
+  <section id="create-post-section" tabindex="0">
+    <h2>Create Post 📝</h2>
+    <textarea id="post-text" placeholder="What's on your mind?"></textarea><br />
+    <button id="submit-post">Post</button>
+    <div id="posts-container" aria-live="polite"></div>
+  </section>
+
+  <section id="meet-mohan" tabindex="0">
+    <h2 class="floating-anim">Meet Mohan 👤</h2>
+    <p>This is the section to introduce Mohan Kafle to the world.</p>
+  </section>
+
+  <section id="mohan-music" tabindex="0">
+    <h2>Mohan Music 🎵</h2>
+    <audio controls>
+      <source src="your-music-file.mp3" type="audio/mp3" />
+      Your browser does not support the audio element.
+    </audio>
+  </section>
+
+  <section id="mohan-blog" tabindex="0">
+    <h2>Mohan Kafle Blog 📝</h2>
+    <p>Welcome to the personal blog section of Mohan Kafle.</p>
+  </section>
+
+</div>
+
+<script>
+  // Visitor Access
+  const visitorPage = document.getElementById('visitor-access-page');
+  const mainApp = document.getElementById('main-app');
+  const visitorForm = document.getElementById('visitor-form');
+  const visitorError = document.getElementById('visitor-error');
+  const logoutBtn = document.getElementById('logout-btn');
+
+  function sanitizeHTML(str) {
+    return str.replace(/[&<>"']/g, m => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[m]);
+  }
+
+  // Check if visitor info exists
+  function hasVisitorAccess(){
+    const visitor = localStorage.getItem('mkn_visitor');
+    if(visitor){
+      try{
+        const data = JSON.parse(visitor);
+        return data.name && data.number;
+      }catch{
+        return false;
+      }
+    }
+    return false;
+  }
+
+  function showMainApp(){
+    visitorPage.style.display = 'none';
+    mainApp.style.display = 'block';
+    mainApp.setAttribute('aria-hidden', 'false');
+    postText.focus();
+    renderPosts();
+  }
+
+  function showVisitorPage(){
+    visitorPage.style.display = 'flex';
+    mainApp.style.display = 'none';
+    mainApp.setAttribute('aria-hidden', 'true');
+    visitorError.textContent = '';
+    visitorForm.reset();
+  }
+
+  if(hasVisitorAccess()){
+    showMainApp();
+  } else {
+    showVisitorPage();
+  }
+
+  visitorForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const name = visitorForm['visitor-name'].value.trim();
+    const number = visitorForm['visitor-number'].value.trim();
+
+    if(name.length < 2){
+      visitorError.textContent = 'Please enter a valid name (min 2 characters).';
+      return;
+    }
+    const phoneRegex = /^[0-9+\-\s]+$/;
+    if(!phoneRegex.test(number) || number.length < 5){
+      visitorError.textContent = 'Please enter a valid phone number.';
+      return;
+    }
+
+    visitorError.textContent = '';
+    localStorage.setItem('mkn_visitor', JSON.stringify({name: sanitizeHTML(name), number: sanitizeHTML(number)}));
+    showMainApp();
+  });
+
+  logoutBtn.addEventListener('click', e => {
+    e.preventDefault();
+    localStorage.removeItem('mkn_visitor');
+    localStorage.removeItem('mkn_posts');
+    showVisitorPage();
+  });
+
+  // ===== Post System =====
+  const postText = document.getElementById('post-text');
+  const submitBtn = document.getElementById('submit-post');
+  const postsContainer = document.getElementById('posts-container');
+
+  let posts = JSON.parse(localStorage.getItem('mkn_posts') || '[]');
+
+  function savePosts() {
+    localStorage.setItem('mkn_posts', JSON.stringify(posts));
+  }
+
+  function renderPosts(){
+    postsContainer.innerHTML = '';
+    posts.slice().reverse().forEach(post => {
+      const postElem = document.createElement('article');
+      postElem.className = 'post';
+      postElem.id = 'post-' + post.id;
+
+      postElem.innerHTML = `
+        <div class="post-text">${sanitizeHTML(post.text)}</div>
+        <div class="post-feedback">
+          <button class="like-btn" aria-label="Like post">❤️ <span class="count">${post.likes}</span></button>
+          <button class="dislike-btn" aria-label="Dislike post">💔 <span class="count">${post.dislikes}</span></button>
+          <button class="share-btn" aria-label="Share post">🔗 Share</button>
+        </div>
+        <div class="emoji-reactions" aria-label="Emoji reactions">
+          <span role="img" aria-label="Laugh emoji" data-emoji="😂">😂</span>
+          <span role="img" aria-label="Fire emoji" data-emoji="🔥">🔥</span>
+          <span role="img" aria-label="Thumbs up emoji" data-emoji="👍">👍</span>
+          <span role="img" aria-label="Surprised emoji" data-emoji="😮">😮</span>
+        </div>
+        <div class="comment-box">
+          <input type="text" placeholder="Add a comment..." aria-label="Add comment input" />
+          <button class="add-comment" aria-label="Add comment button">Comment</button>
+          <div class="comments" aria-live="polite"></div>
+        </div>
+      `;
+
+      // Feedback buttons
+      const likeBtn = postElem.querySelector('.like-btn');
+      const dislikeBtn = postElem.querySelector('.dislike-btn');
+      const shareBtn = postElem.querySelector('.share-btn');
+      const likeCount = likeBtn.querySelector('.count');
+      const dislikeCount = dislikeBtn.querySelector('.count');
+
+      // Comments
+      const commentInput = postElem.querySelector('input');
+      const commentBtn = postElem.querySelector('.add-comment');
+      const commentsDiv = postElem.querySelector('.comments');
+
+      // Likes
+      likeBtn.addEventListener('click', () => {
+        post.likes++;
+        likeCount.textContent = post.likes;
+        savePosts();
+      });
+
+      // Dislikes
+      dislikeBtn.addEventListener('click', () => {
+        post.dislikes++;
+        dislikeCount.textContent = post.dislikes;
+        savePosts();
+      });
+
+      // Share (clipboard)
+      shareBtn.addEventListener('click', () => {
+        const postURL = window.location.href.split('#')[0] + '#post-' + post.id;
+        navigator.clipboard.writeText(postURL).then(() => {
+          alert('Post link copied! Share it with your friends.');
+        }).catch(() => {
+          alert('Could not copy link. Please copy manually: ' + postURL);
+        });
+      });
+
+      // Emoji reactions
+      const emojis = postElem.querySelectorAll('.emoji-reactions span');
+      emojis.forEach(span => {
+        span.addEventListener('click', () => {
+          const reaction = document.createElement('div');
+          reaction.textContent = `Reacted with ${span.textContent}`;
+          reaction.style.fontStyle = 'italic';
+          commentsDiv.appendChild(reaction);
+          commentsDiv.scrollTop = commentsDiv.scrollHeight;
+        });
+      });
+
+      // Add comment
+      commentBtn.addEventListener('click', () => {
+        const commentText = commentInput.value.trim();
+        if(commentText){
+          const comment = { id: Date.now(), text: commentText };
+          post.comments.push(comment);
+          renderComments(post, commentsDiv);
+          commentInput.value = '';
+          savePosts();
+        }
+      });
+
+      // Render existing comments
+      renderComments(post, commentsDiv);
+
+      postsContainer.appendChild(postElem);
+      // Animate appearance
+      setTimeout(() => {
+        postElem.style.opacity = '1';
+        postElem.style.transform = 'translateY(0)';
+      }, 20);
+    });
+  }
+
+  // Render comments helper
+  function renderComments(post, container){
+    container.innerHTML = '';
+    post.comments.forEach(cmt => {
+      const div = document.createElement('div');
+      div.textContent = '💬 ' + cmt.text;
+      container.appendChild(div);
+    });
+  }
+
+  // Submit new post
+  submitBtn.addEventListener('click', () => {
+    const text = postText.value.trim();
+    if(text.length < 5){
+      alert('Please write at least 5 characters.');
+      return;
+    }
+    const newPost = {
+      id: Date.now(),
+      text,
+      likes: 0,
+      dislikes: 0,
+      comments: []
+    };
+    posts.push(newPost);
+    savePosts();
+    renderPosts();
+    postText.value = '';
+  });
+
+</script>
+</body>
+</html>
