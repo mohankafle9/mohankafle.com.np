@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MKN | Mohan Kafle Network</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1f1c29, #3a3050);
+      color: #eee;
+      scroll-behavior: smooth;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      background: #241f38;
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.7);
+    }
+    nav a {
+      color: #e1a1f7;
+      margin: 0 1.5rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.2rem;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background: #e1a1f7;
+      transition: width 0.3s ease;
+    }
+    nav a:hover, nav a:focus {
+      color: #ffffff;
+    }
+    nav a:hover::after, nav a:focus::after {
+      width: 100%;
+    }
+
+    header {
+      text-align: center;
+      padding: 6rem 1rem 4rem;
+      background: linear-gradient(120deg, #662d91, #a64ca6);
+      box-shadow: inset 0 0 100px rgba(166, 76, 166, 0.4);
+    }
+    header h1 {
+      font-size: 3.8rem;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      text-shadow:
+        0 0 10px #ff55ff,
+        0 0 20px #d647d6,
+        0 0 40px #ff55ff;
+    }
+    header p {
+      font-size: 1.5rem;
+      margin-top: 1rem;
+      color: #f3d9ff;
+      font-weight: 400;
+      animation: floatText 4s ease-in-out infinite;
+    }
+
+    @keyframes floatText {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    section {
+      max-width: 900px;
+      margin: 4rem auto;
+      padding: 0 1rem;
+    }
+    .section-title {
+      font-size: 2.8rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      color: #e0c3fc;
+      text-shadow:
+        0 0 10px #ff77ff,
+        0 0 20px #a14eb9;
+    }
+
+    /* Music Player Card */
+    .music-track {
+      background: #2f2642;
+      border-radius: 20px;
+      padding: 2rem 2.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow:
+        0 0 15px #aa47f5aa,
+        inset 0 0 10px #9b3eff55;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+    }
+    .track-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #f8c7ff;
+      margin-bottom: 1rem;
+      text-shadow:
+        0 0 5px #ff99ff,
+        0 0 10px #c56eff;
+    }
+
+    /* Custom Play Button */
+    .play-btn {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(45deg, #d93ff6, #9b3eff);
+      border-radius: 50%;
+      border: none;
+      box-shadow:
+        0 0 15px #d93ff6,
+        0 0 30px #9b3eff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: box-shadow 0.3s ease;
+      position: relative;
+    }
+    .play-btn:hover {
+      box-shadow:
+        0 0 25px #ff6fff,
+        0 0 40px #bb4dff,
+        0 0 60px #bb4dff;
+    }
+
+    .play-btn svg {
+      fill: white;
+      width: 30px;
+      height: 30px;
+      transition: transform 0.3s ease;
+    }
+    .playing .play-btn svg {
+      transform: rotate(90deg);
+    }
+
+    /* Progress bar container */
+    .progress-container {
+      width: 100%;
+      height: 8px;
+      background: #4d3c7c;
+      border-radius: 10px;
+      margin: 1.5rem 0 0.5rem 0;
+      overflow: hidden;
+      box-shadow: inset 0 0 5px #6633ff88;
+    }
+    /* Progress bar fill */
+    .progress {
+      height: 100%;
+      background: linear-gradient(90deg, #f56eff, #7b4eff);
+      width: 0%;
+      transition: width 0.2s linear;
+      box-shadow:
+        0 0 8px #bb4dff,
+        0 0 15px #bb4dff;
+    }
+
+    /* Like/dislike container */
+    .feedback {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1.5rem;
+    }
+    .feedback button {
+      background: transparent;
+      border: none;
+      color: #e7c4ff;
+      font-size: 2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      user-select: none;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .feedback button:hover {
+      color: #ffb3ff;
+      filter: drop-shadow(0 0 5px #ffb3ff);
+    }
+    .feedback button:active {
+      transform: scale(1.2);
+    }
+    .feedback .count {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #ffd6ff;
+      text-shadow: 0 0 5px #bb4dff;
+    }
+
+    /* Confetti burst effect */
+    .confetti {
+      position: absolute;
+      pointer-events: none;
+      width: 10px;
+      height: 10px;
+      background: #ff99ff;
+      opacity: 0;
+      border-radius: 50%;
+      animation: confettiBurst 800ms forwards;
+      filter: drop-shadow(0 0 4px #ff77ff);
+      z-index: 1000;
+    }
+    @keyframes confettiBurst {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(calc(var(--x) * 50px), calc(var(--y) * 50px)) scale(0.1);
+      }
+    }
+
+    /* New Post Section */
+    #create-post {
+      background: #2e234f;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow:
+        0 0 15px #aa47f5aa,
+        inset 0 0 10px #9b3eff55;
+      margin-bottom: 3rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #create-post h3 {
+      margin-bottom: 1rem;
+      color: #f8c7ff;
+      text-shadow:
+        0 0 5px #ff99ff,
+        0 0 10px #c56eff;
+      font-size: 2rem;
+      text-align: center;
+    }
+    #post-text {
+      width: 100%;
+      min-height: 100px;
+      border-radius: 12px;
+      border: none;
+      padding: 1rem;
+      font-size: 1.1rem;
+      resize: vertical;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: inset 0 0 10px #6633ff88;
+      background: #3f3268;
+      color: #eee;
+      outline: none;
+      margin-bottom: 1rem;
+    }
+    #post-text::placeholder {
+      color: #bbb;
+    }
+    #submit-post {
+      background: linear-gradient(45deg, #d93ff6, #9b3eff);
+      border: none;
+      border-radius: 30px;
+      color: white;
+      padding: 0.8rem 2.5rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: block;
+      margin: 0 auto;
+      box-shadow:
+        0 0 15px #d93ff6,
+        0 0 30px #9b3eff;
+      transition: background 0.3s ease;
+    }
+    #submit-post:hover {
+      background: linear-gradient(45deg, #ff77ff, #bb4dff);
+      box-shadow:
+        0 0 25px #ff77ff,
+        0 0 40px #bb4dff,
+        0 0 60px #bb4dff;
+    }
+
+    /* Posts container */
+    #posts-container {
+      max-width: 700px;
+      margin: 0 auto 4rem;
+    }
+    .post {
+      background: #3a2e62;
+      border-radius: 18px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.8rem;
+      box-shadow:
+        0 0 12px #d37affcc,
+        inset 0 0 8px #b65effaa;
+      color: #f0d9ff;
+      position: relative;
+      word-wrap: break-word;
+    }
+    .post-text {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      white-space: pre-line;
+    }
+    .post-feedback {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .post-feedback button {
+      font-size: 1.6rem;
+      color: #e7c4ff;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.3s ease;
+      user-select: none;
+      position: relative;
+    }
+    .post-feedback button:hover {
+      color: #ffb3ff;
+      filter: drop-shadow(0 0 5px #ffb3ff);
+    }
+    .post-feedback button:active {
+      transform: scale(1.2);
+    }
+    .post-feedback .count {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #ffd6ff;
+      text-shadow: 0 0 5px #bb4dff;
+    }
+    /* Share button */
+    .share-btn {
+      font-size: 1.5rem;
+      color: #a5a0c6;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+    .share-btn:hover {
+      color: #ffb3ff;
+      filter: drop-shadow(0 0 5px #ffb3ff);
+    }
+    /* Tooltip for share */
+    .tooltip {
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #441e7a;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: #ddd;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      white-space: nowrap;
+      user-select: none;
+      z-index: 100;
+    }
+    .share-btn:hover .tooltip {
+      opacity: 1;
+    }
+
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#about">Meet Mohan</a>
+  <a href="#music">Mohan Music</a>
+  <a href="#blog">Blog</a>
+  <a href="#create-post">Create Post</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<header>
+  <h1>Mohan Kafle Network (MKN)</h1>
+  <p>नेपालको सबैभन्दा शक्तिशाली क्रिएटर प्लेटफर्म</p>
+</header>
+
+<section id="about">
+  <h2 class="section-title">Meet Mohan</h2>
+  <p style="max-width: 700px; margin: 0 auto; font-size:1.1rem; color:#d1baff;">
+    This is where your photo and intro will go. Talk about your journey, mission, and creative power.
+  </p>
+</section>
+
+<section id="music">
+  <h2 class="section-title">Mohan Music</h2>
+
+  <div class="music-track" data-id="1">
+    <div class="track-title">Beat One</div>
+    <button class="play-btn" aria-label="Play/Pause Beat One">
+      <svg viewBox="0 0 64 64"><polygon points="16,12 52,32 16,52"/></svg>
+    </button>
+    <div class="progress-container">
+      <div class="progress"></div>
+    </div>
+    <div class="feedback">
+      <button class="like-btn" aria-label="Like Beat One">❤️ <span class="count">0</span></button>
+      <button class="dislike-btn" aria-label="Dislike Beat One">💔 <span class="count">0</span></button>
+    </div>
+  </div>
+
+  <div class="music-track" data-id="2">
+    <div class="track-title">Beat Two</div>
+    <button class="play-btn" aria-label="Play/Pause Beat Two">
+      <svg viewBox="0 0 64 64"><polygon points="16,12 52,32 16,52"/></svg>
+    </button>
+    <div class="progress-container">
+      <div class="progress"></div>
+    </div>
+    <div class="feedback">
+      <button class="like-btn" aria-label="Like Beat Two">❤️ <span class="count">0</span></button>
+      <button class="dislike-btn" aria-label="Dislike Beat Two">💔 <span class="count">0</span></button>
+    </div>
+  </div>
+</section>
+
+<section id="blog">
+  <h2 class="section-title">Mohan Kafle Blog</h2>
+  <p style="max-width: 700px; margin: 0 auto; font-size:1.1rem; color:#d1baff;">
+    This section will display your latest blog posts, articles, and ideas in Nepali + English.
+  </p>
+</section>
+
+<section id="create-post">
+  <h3>Create Post</h3>
+  <textarea id="post-text" placeholder="Write something here..."></textarea>
+  <button id="submit-post">Post</button>
+</section>
+
+<section id="posts-container">
+  <!-- Visitor posts will appear here -->
+</section>
+
+<section id="contact">
+  <h2 class="section-title">Contact</h2>
+  <p style="max-width: 700px; margin: 0 auto; font-size:1.1rem; color:#d1baff;">
+    Email: iammohankafle@gmail.com<br />
+    FB: Mohan Kafle<br />
+    Insta: Mohan Music
+  </p>
+</section>
+
+<footer>
+  <p>&copy; 2025 Mohan Kafle Network (MKN). All rights reserved.</p>
+</footer>
+
+<script>
+  class MusicPlayer {
+    constructor(container, audioSrc) {
+      this.container = container;
+      this.audio = new Audio(audioSrc);
+      this.playBtn = container.querySelector('.play-btn');
+      this.progress = container.querySelector('.progress');
+      this.likeBtn = container.querySelector('.like-btn');
+      this.dislikeBtn = container.querySelector('.dislike-btn');
+      this.likeCountSpan = this.likeBtn.querySelector('.count');
+      this.dislikeCountSpan = this.dislikeBtn.querySelector('.count');
+      this.progressContainer = container.querySelector('.progress-container');
+      this.isPlaying = false;
+      this.likeCount = 0;
+      this.dislikeCount = 0;
+
+      this.playBtn.addEventListener('click', () => this.togglePlay());
+      this.audio.addEventListener('timeupdate', () => this.updateProgress());
+      this.audio.addEventListener('ended', () => this.resetPlayer());
+      this.likeBtn.addEventListener('click', () => this.incrementLike());
+      this.dislikeBtn.addEventListener('click', () => this.incrementDislike());
+    }
+
+    togglePlay() {
+      if (this.isPlaying) {
+        this.audio.pause();
+        this.isPlaying = false;
+        this.updatePlayButton(false);
+      } else {
+        this.audio.play();
+        this.isPlaying = true;
+        this.updatePlayButton(true);
+      }
+    }
+    updatePlayButton(playing) {
+      const svg = this.playBtn.querySelector('svg');
+      if(playing) {
+        // show pause icon
+        svg.innerHTML = `<rect x="16" y="12" width="10" height="40" fill="white"></rect>
+                         <rect x="38" y="12" width="10" height="40" fill="white"></rect>`;
+        this.container.classList.add('playing');
+      } else {
+        // show play icon
+        svg.innerHTML = `<polygon points="16,12 52,32 16,52" fill="white"></polygon>`;
+        this.container.classList.remove('playing');
+      }
+    }
+    updateProgress() {
+      const percent = (this.audio.currentTime / this.audio.duration) * 100;
+      this.progress.style.width = percent + '%';
+    }
+    resetPlayer() {
+      this.isPlaying = false;
+      this.updatePlayButton(false);
+      this.progress.style.width = '0%';
+    }
+    incrementLike() {
+      this.likeCount++;
+      this.likeCountSpan.textContent = this.likeCount;
+      this.fireConfetti(this.likeBtn);
+    }
+    incrementDislike() {
+      this.dislikeCount++;
+      this.dislikeCountSpan.textContent = this.dislikeCount;
+      this.fireConfetti(this.dislikeBtn);
+    }
+    fireConfetti(button) {
+      for(let i=0; i<10; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.setProperty('--x', (Math.random() - 0.5).toFixed(2));
+        confetti.style.setProperty('--y', (Math.random() - 0.5).toFixed(2));
+        confetti.style.left = button.getBoundingClientRect().left + (button.offsetWidth/2) + 'px';
+        confetti.style.top = button.getBoundingClientRect().top + (button.offsetHeight/2) + 'px';
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 800);
+      }
+    }
+  }
+
+  // Initialize music players
+  // Replace audioSrc with your real audio file URLs
+  const tracks = document.querySelectorAll('.music-track');
+  const audioSources = [
+    'https://cdn.pixabay.com/download/audio/2021/08/04/audio_3a6d73f249.mp3?filename=summer-ambient-1324.mp3',
+    'https://cdn.pixabay.com/download/audio/2021/09/30/audio_8bdf124e18.mp3?filename=relaxing-piano-14344.mp3'
+  ];
+  tracks.forEach((track, idx) => {
+    new MusicPlayer(track, audioSources[idx]);
+  });
+
+  // Post system
+  const postText = document.getElementById('post-text');
+  const submitBtn = document.getElementById('submit-post');
+  const postsContainer = document.getElementById('posts-container');
+
+  function createPostElement(text, id) {
+    const post = document.createElement('article');
+    post.className = 'post';
+    post.dataset.postId = id;
+
+    post.innerHTML = `
+      <div class="post-text">${escapeHtml(text)}</div>
+      <div class="post-feedback">
+        <button class="like-btn" aria-label="Like Post">❤️ <span class="count">0</span></button>
+        <button class="dislike-btn" aria-label="Dislike Post">💔 <span class="count">0</span></button>
+        <button class="share-btn" aria-label="Share Post">
+          🔗 Share
+          <span class="tooltip">Share this post</span>
+        </button>
+      </div>
+    `;
+
+    // Like & Dislike
+    const likeBtn = post.querySelector('.like-btn');
+    const dislikeBtn = post.querySelector('.dislike-btn');
+    const likeCountSpan = likeBtn.querySelector('.count');
+    const dislikeCountSpan = dislikeBtn.querySelector('.count');
+
+    likeBtn.addEventListener('click', () => {
+      let val = Number(likeCountSpan.textContent);
+      likeCountSpan.textContent = val + 1;
+      fireConfetti(likeBtn);
+    });
+    dislikeBtn.addEventListener('click', () => {
+      let val = Number(dislikeCountSpan.textContent);
+      dislikeCountSpan.textContent = val + 1;
+      fireConfetti(dislikeBtn);
+    });
+
+    // Share button
+    const shareBtn = post.querySelector('.share-btn');
+    shareBtn.addEventListener('click', () => {
+      const postURL = window.location.href.split('#')[0] + '#post-' + id;
+      if (navigator.share) {
+        navigator.share({
+          title: 'Check out this post on MKN',
+          url: postURL,
+        }).catch(console.error);
+      } else {
+        // fallback: copy link to clipboard
+        navigator.clipboard.writeText(postURL).then(() => {
+          alert('Post link copied! Share it with your friends.');
+        });
+      }
+    });
+
+    post.id = 'post-' + id;
+    return post;
+  }
+
+  function fireConfetti(button) {
+    for(let i=0; i<10; i++) {
+      const confetti = document.createElement('div');
+      confetti.classList.add('confetti');
+      confetti.style.setProperty('--x', (Math.random() - 0.5).toFixed(2));
+      confetti.style.setProperty('--y', (Math.random() - 0.5).toFixed(2));
+      const rect = button.getBoundingClientRect();
+      confetti.style.left = (rect.left + rect.width/2) + 'px';
+      confetti.style.top = (rect.top + rect.height/2) + 'px';
+      document.body.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 800);
+    }
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML.replace(/\n/g, '<br>');
+  }
+
+  let postIdCounter = 0;
+  submitBtn.addEventListener('click', () => {
+    const text = postText.value.trim();
+    if (text.length < 5) {
+      alert('Please write at least 5 characters.');
+      return;
+    }
+    postIdCounter++;
+    const postElem = createPostElement(text, postIdCounter);
+    // Add new post at top
+    postsContainer.prepend(postElem);
+    postText.value = '';
+  });
+
+  // If you want, later we can add localStorage persistence
+
+</script>
+
+</body>
+</html>
